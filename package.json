@@ -1,10 +1,20 @@
 {
-    "name": "timeless-torah"
-  , "description": ""
-  , "version": "0.0.1"
-  , "private": true
-  , "main": "./zencoder.coffee"
+    "name": "zencoder"
+  , "description": "An implementation of the Zencoder API in Node"
+  , "homepage": "https://github.com/ryanfaerman/node-zencoder"
+  ,  "keywords": ["zencoder", "encoding"]
+  ,  "author": "Ryan Faerman <ryan@faerman.net> (www.ryanfaerman.com)"
+
+  ,  "repository": {
+      "type": "git"
+    , "url": "git://github.com/ryanfaerman/node-zencoder.git"
+  }
+  , "main": "zencoder.js"
   , "dependencies": {
       "underscore": "1.3.1"
   }
+  , "devDependencies": {
+      "coffee-script": "*"
+  }
+  , "version": "0.0.1"
 }
