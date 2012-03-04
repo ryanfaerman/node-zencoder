@@ -6,20 +6,29 @@ querystring = require 'querystring'
 
 
 class exports.Zencoder
-	base_url: 'https://app.zencoder.com/api/v2'
+	# These are our environment settings for the most part
+	base_url: 'https://app.zencoder.com/api'
 	api_key: ''
+	api_version: 2
 	cert: fs.readFileSync 'zencoder_ca_chain.crt'
 
-	version: '0.0.1'
+	# Version of the library
+	version: '0.0.2'
+
 	default_options:
 		timeout: 10000
+		api_version: @::api_version
 		headers:
 			'Accept': 'application/json'
 			'Content-Type': 'application/json'
 			'User-Agent': "node-zencoder v-#{@::version}"
+	
+	# Response object
 	@Response =
 		code: 0
+		# JSON of the body
 		body: ''
+		# Raw Body String
 		raw_body: ''
 
 	Job:
@@ -54,7 +63,7 @@ class exports.Zencoder
 	
 	Account:
 		create: (params, options, cb)=>
-			@post '/account', params, options
+			@post '/account', params, options, cb
 		details: (cb)=>
 			@get '/account', cb
 		integration: (cb) =>
@@ -67,22 +76,28 @@ class exports.Zencoder
 			@get '/reports/minutes', options, cb
 
 	process = (method, request_url, body = {}, options = {}, cb = () ->) =>
+		# Find the callback
 		cb = body if typeof body is 'function'
 		cb = options if typeof options is 'function'
 
+		# Force method name to be consistent
 		method = method.toUpperCase()
 
-		request_url = url.parse @::base_url + request_url
-		request_url.protocol = request_url.protocol.replace ':', ''
-		
-		body = _.extend api_key: @::api_key, body
 		payload = JSON.stringify(body) unless method is 'GET'
-		
 
 		options = _.extend @::default_options, options
 		headers = options.headers
+		headers = _.extend('Zencoder-Api-Key': @::api_key, headers)
 		headers = _.extend('Content-Length': payload.length, headers) unless method is 'GET'
+
 		
+		use_version = options.api_version || @::api_version 
+		api_version = ''
+		if use_version > 1
+			api_version = "/v#{use_version}"
+
+		request_url = url.parse @::base_url + api_version + request_url
+		request_url.protocol = request_url.protocol.replace ':', ''
 
 		http_options =
 			host: request_url.hostname
@@ -90,7 +105,7 @@ class exports.Zencoder
 			path: request_url.path
 			method: method
 			headers: headers
-			cert: @::cert
+			ca: @::cert
 
 		if method is 'GET' then http_options.path += "?#{querystring.stringify body}" 
 		response = _.clone @Response
@@ -114,7 +129,7 @@ class exports.Zencoder
 			req.write "#{payload}\n"
 		req.end()
 		
-	
+	# Helper methods to make most of the methods clearer
 	@post = (request_url, body = {}, options = {}, cb = () ->) =>
 		process 'POST', request_url, body, options
 	@get = (request_url, body = {}, options = {}, cb = () ->) =>

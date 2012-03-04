@@ -1,6 +1,11 @@
 {Zencoder} = require './zencoder'
 
 Zencoder::api_key = ''
+
+###
+Zencoder::api_version = 1
+###
+
 ###
 Zencoder::Job.create 
 	input: 's3://timelesstorah.com/010308.mp3'
@@ -109,12 +114,12 @@ Zencoder::Account.create account, (res) ->
 	console.log res.body
 ###
 
-###
+
 Zencoder::Account.details (res) ->
 	console.log "GOT A RESPONSE IN MAH CALLBACK"
 	console.log res.code
 	console.log res.body
-###
+
 ###
 Zencoder::Account.integration (res) ->
 	console.log "GOT A RESPONSE IN MAH CALLBACK"
@@ -128,9 +133,10 @@ Zencoder::Account.live (res) ->
 	console.log res.body
 ###
 
+###
 Zencoder::Reports.minutes (res) ->
 	console.log "GOT A RESPONSE IN MAH CALLBACK"
 	console.log res.code
 	console.log res.body
-
+###
 

@@ -12,21 +12,24 @@
   querystring = require('querystring');
 
   exports.Zencoder = (function() {
-    var process;
-    var _this = this;
+    var process,
+      _this = this;
 
     function Zencoder() {}
 
-    Zencoder.prototype.base_url = 'https://app.zencoder.com/api/v2';
+    Zencoder.prototype.base_url = 'https://app.zencoder.com/api';
 
     Zencoder.prototype.api_key = '';
 
+    Zencoder.prototype.api_version = 2;
+
     Zencoder.prototype.cert = fs.readFileSync('zencoder_ca_chain.crt');
 
-    Zencoder.prototype.version = '0.0.1';
+    Zencoder.prototype.version = '0.0.2';
 
     Zencoder.prototype.default_options = {
       timeout: 10000,
+      api_version: Zencoder.prototype.api_version,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -87,7 +90,7 @@
 
     Zencoder.prototype.Account = {
       create: function(params, options, cb) {
-        return Zencoder.post('/account', params, options);
+        return Zencoder.post('/account', params, options, cb);
       },
       details: function(cb) {
         return Zencoder.get('/account', cb);
@@ -107,33 +110,36 @@
     };
 
     process = function(method, request_url, body, options, cb) {
-      var headers, http_options, payload, req, response;
+      var api_version, headers, http_options, payload, req, response, use_version;
       if (body == null) body = {};
       if (options == null) options = {};
       if (cb == null) cb = function() {};
       if (typeof body === 'function') cb = body;
       if (typeof options === 'function') cb = options;
       method = method.toUpperCase();
-      request_url = url.parse(Zencoder.prototype.base_url + request_url);
-      request_url.protocol = request_url.protocol.replace(':', '');
-      body = _.extend({
-        api_key: Zencoder.prototype.api_key
-      }, body);
       if (method !== 'GET') payload = JSON.stringify(body);
       options = _.extend(Zencoder.prototype.default_options, options);
       headers = options.headers;
+      headers = _.extend({
+        'Zencoder-Api-Key': Zencoder.prototype.api_key
+      }, headers);
       if (method !== 'GET') {
         headers = _.extend({
           'Content-Length': payload.length
         }, headers);
       }
+      use_version = options.api_version || Zencoder.prototype.api_version;
+      api_version = '';
+      if (use_version > 1) api_version = "/v" + use_version;
+      request_url = url.parse(Zencoder.prototype.base_url + api_version + request_url);
+      request_url.protocol = request_url.protocol.replace(':', '');
       http_options = {
         host: request_url.hostname,
         port: request_url.port,
         path: request_url.path,
         method: method,
         headers: headers,
-        cert: Zencoder.prototype.cert
+        ca: Zencoder.prototype.cert
       };
       if (method === 'GET') {
         http_options.path += "?" + (querystring.stringify(body));
