@@ -23,9 +23,9 @@
 
     Zencoder.prototype.api_version = 2;
 
-    Zencoder.prototype.cert = fs.readFileSync('zencoder_ca_chain.crt');
+    Zencoder.prototype.cert = fs.readFileSync("" + __dirname + "/zencoder_ca_chain.crt");
 
-    Zencoder.prototype.version = '0.0.2';
+    Zencoder.prototype.version = '0.0.3';
 
     Zencoder.prototype.default_options = {
       timeout: 10000,
