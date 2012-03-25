@@ -13,7 +13,7 @@ class exports.Zencoder
 	cert: fs.readFileSync "#{__dirname}/zencoder_ca_chain.crt"
 
 	# Version of the library
-	version: '0.0.2'
+	version: '0.0.3'
 
 	default_options:
 		timeout: 10000
