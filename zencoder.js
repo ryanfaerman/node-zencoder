@@ -23,7 +23,12 @@
 
     Zencoder.prototype.api_version = 2;
 
-    Zencoder.prototype.cert = fs.readFileSync('zencoder_ca_chain.crt');
+    fs.readFile(__dirname + '/zencoder_ca_chain.crt', 'UTF-8', function(err, data) {
+      if (err) {
+        throw err;
+      }
+      Zencoder.prototype.cert = data;
+    });
 
     Zencoder.prototype.version = '0.0.2';
 
