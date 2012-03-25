@@ -10,7 +10,7 @@ class exports.Zencoder
 	base_url: 'https://app.zencoder.com/api'
 	api_key: ''
 	api_version: 2
-	cert: fs.readFileSync 'zencoder_ca_chain.crt'
+	cert: fs.readFileSync "#{__dirname}/zencoder_ca_chain.crt"
 
 	# Version of the library
 	version: '0.0.2'
