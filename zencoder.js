@@ -23,7 +23,10 @@
 
     Zencoder.prototype.api_version = 2;
 
-    Zencoder.prototype.cert = fs.readFileSync("" + __dirname + "/zencoder_ca_chain.crt");
+    Zencoder.prototype.cert = fs.readFileSync("" + __dirname + "/zencoder_ca_chain.crt")
+        .toString().split("-----END CERTIFICATE-----")
+        .filter(function(cert) { return cert.trim().length > 0; })
+        .map(function(item) { return item + "-----END CERTIFICATE-----\n"; });
 
     Zencoder.prototype.version = '0.0.3';
 
