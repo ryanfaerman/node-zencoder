@@ -1,6 +1,6 @@
 # Important 
 
-This project (and module) is in the process of being taken over by the developers at Zencoder. I'll update this repo and provide links to the zencoder repositories once that occurs.
+This project (and module) has been taken over by the developers at Zencoder. Please refer to https://github.com/zencoder/zencoder-node.
 
 
 # node-zencoder -- zencode from node.js
